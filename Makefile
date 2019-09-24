@@ -7,6 +7,7 @@ GOFMT=$(GO) fmt
 GOVET=$(GO) vet
 GOTEST=$(GO) test
 GOPATH=$(shell go env GOPATH)
+PROTOC=protoc
 
 all: clean format lint test build
 
@@ -27,3 +28,6 @@ cover:
 
 build:
 	$(GOBUILD) -o $(BINDIR)/binance-candle-service $(MODNAME)/cmd/binance
+
+protobuf:
+	$(PROTOC) -I$(CURDIR)/../bull-rider/protobuf/ --go_out=$(CURDIR)/pkg/protobuf/ $(CURDIR)/../bull-rider/protobuf/*.proto

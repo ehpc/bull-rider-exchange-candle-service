@@ -29,6 +29,9 @@ func (t *TransportMock) AddReceivableMessage(message transport.Message) {
 }
 
 //GetLastSentMessageAsString returns last sent message as string
-func (t *TransportMock) GetLastSentMessageAsString() string {
-	return t.sentMessages[len(t.sentMessages)-1].String()
+func (t *TransportMock) GetLastSentMessageAsString() (string, bool) {
+	if len(t.sentMessages) == 0 {
+		return "", false
+	}
+	return t.sentMessages[len(t.sentMessages)-1].String(), true
 }

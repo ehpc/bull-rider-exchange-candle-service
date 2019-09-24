@@ -1,2 +1,4 @@
-# bull-rider-exchange-candle-service
-Gets candles from exchange.
+# Bull Rider Exchange Candle Service
+
+*Exchange Candle Service* fetches candle data from exchanges.
+
