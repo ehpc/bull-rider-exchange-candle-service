@@ -17,7 +17,7 @@ func TestGetCandles(t *testing.T) {
 	iotaCandles := []candle.Candle{}
 	ethCandles := []candle.Candle{}
 	for _, x := range candles {
-		switch x.Pair{
+		switch x.Pair {
 		case candle.IOTAUSDT:
 			iotaCandles = append(iotaCandles, x)
 		case candle.ETHUSDT:
@@ -30,7 +30,7 @@ func TestGetCandles(t *testing.T) {
 	interval15mCandles := []candle.Candle{}
 	interval1hCandles := []candle.Candle{}
 	for _, x := range iotaCandles {
-		switch x.Interval{
+		switch x.Interval {
 		case candle.Interval15m:
 			interval15mCandles = append(interval15mCandles, x)
 		case candle.Interval1h:
@@ -42,7 +42,7 @@ func TestGetCandles(t *testing.T) {
 	interval15mCandles = nil
 	interval1hCandles = nil
 	for _, x := range ethCandles {
-		switch x.Interval{
+		switch x.Interval {
 		case candle.Interval15m:
 			interval15mCandles = append(interval15mCandles, x)
 		case candle.Interval1h:

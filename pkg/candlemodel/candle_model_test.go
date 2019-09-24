@@ -22,6 +22,6 @@ func TestCandleModel(t *testing.T) {
 		candleModel := CandleModel{}
 		got := candleModel.AddCandle(candle)
 		want := true
-		assert.Equal(t, got, want)
+		assert.Equal(t, want, got)
 	})
 }

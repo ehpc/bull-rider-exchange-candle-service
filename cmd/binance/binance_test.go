@@ -13,25 +13,32 @@ import (
 const testCandlesNumber = 2
 
 func TestMainFlow(t *testing.T) {
-	message := transport.Message{
-		Body: []byte(
-			myTesting.GenerateCandlesJSON(2),
-		),
-	}
-
+	// Preparing mock binance.com transport
 	apiTransport := myTesting.TransportMock{}
-	apiTransport.AddReceivableMessage(message)
+	apiTransport.AddReceivableMessage(transport.Message{
+		Body: []byte(
+			myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, 2),
+		),
+	})
+
 	// Fetching data from Binance
 	api := binanceapi.NewBinanceAPI(&apiTransport)
-	candles := api.GetCandles([]candle.Pair{candle.IOTAUSDT}, []candle.Interval{candle.Interval1h})
+	candles := api.GetCandles(
+		[]candle.Pair{candle.IOTAUSDT},
+		[]candle.Interval{candle.Interval1h},
+	)
 
-	modelTransport := myTesting.TransportMock{}
 	// Pushing data to recipients
+	modelTransport := myTesting.TransportMock{}
 	model := candlemodel.NewCandleModel(&modelTransport)
 	model.AddCandles(candles)
 
-	got, ok := modelTransport.GetLastSentMessageAsString()
+	// Verifying acceptable outgoing message format
+	lastSentMessage, ok := modelTransport.GetLastSentMessage()
 	assert.True(t, ok)
-	assert.Contains(t, got, "1561622400000")
-	assert.Contains(t, got, "5370")
+	assert.Equal(
+		t,
+		myTesting.BinanceCandleExampleProtobufMarshaled,
+		lastSentMessage.Body,
+	)
 }

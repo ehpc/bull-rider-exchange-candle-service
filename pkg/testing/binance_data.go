@@ -1,7 +1,12 @@
 package testing
 
-// BinanceCandleJSONElement is an example of Binance API candle
-const BinanceCandleJSONElement = `[
+import (
+	"github.com/golang/protobuf/proto"
+	"github.com/ehpc/bull-rider/protobuf/go/candle"
+)
+
+// BinanceCandleExampleJSON is an example of Binance API candle
+const BinanceCandleExampleJSON = `[
 	1561622400000,
 	"0.42590000",
 	"0.42680000",
@@ -16,12 +21,20 @@ const BinanceCandleJSONElement = `[
 	"0"
 ]`
 
+// BinanceCandleExampleProtobuf is an example of Binance candle converted to
+// protobuf format
+var BinanceCandleExampleProtobuf = &candle.Candle{}
+
+// BinanceCandleExampleProtobufMarshaled is an example of Binance candle 
+// converted to protobuf format and marshaled to []bytes
+var BinanceCandleExampleProtobufMarshaled, _ = proto.Marshal(BinanceCandleExampleProtobuf)
+
 // GenerateCandlesJSON generates json with candles from Binance API
-func GenerateCandlesJSON(count int) string {
+func GenerateCandlesJSON(candleJSON string, count int) string {
 	json := "["
 	for i := 0; i < count; i++ {
-		json += BinanceCandleJSONElement
-		if i < count - 1 {
+		json += candleJSON
+		if i < count-1 {
 			json += ","
 		}
 	}
