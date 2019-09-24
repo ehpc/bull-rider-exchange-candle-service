@@ -1,7 +1,7 @@
 package testing
 
 import (
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/transport"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 )
 
 //TransportMock is a mock for transport layer

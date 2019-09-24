@@ -1,8 +1,8 @@
 package binanceapi
 
 import (
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/candle"
-	myTesting "ehpc.io/bull-rider/exchange-candle-service/pkg/testing"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
+	myTesting "github.com/ehpc/bull-rider-exchange-candle-service/pkg/testing"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

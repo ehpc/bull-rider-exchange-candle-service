@@ -1,5 +1,5 @@
 BINDIR=$(CURDIR)/bin
-MODNAME=ehpc.io/bull-rider/exchange-candle-service
+MODNAME=github.com/ehpc/bull-rider-exchange-candle-service
 
 GO=go
 GOBUILD=$(GO) build

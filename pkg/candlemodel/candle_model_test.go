@@ -1,7 +1,7 @@
 package candlemodel
 
 import (
-	. "ehpc.io/bull-rider/exchange-candle-service/pkg/candle"
+	. "github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

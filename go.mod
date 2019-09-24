@@ -1,4 +1,4 @@
-module ehpc.io/bull-rider/exchange-candle-service
+module github.com/ehpc/bull-rider-exchange-candle-service
 
 go 1.13
 

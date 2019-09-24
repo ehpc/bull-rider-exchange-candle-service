@@ -1,9 +1,8 @@
 package candlemodel
 
 import (
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/candle"
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/transport"
-	bullrider "github.com/ehpc/bull-rider"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 )
 
 // CandleModel is a model for storing candles

@@ -1,6 +1,7 @@
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/ehpc/bull-rider v0.0.0-20190916092659-49417de0f511 h1:kkas2Nt25p/AJFUJ+VAAWcq59mk/wpY4aXJ/w/bY5sg=
+github.com/ehpc/bull-rider v0.0.0-20190924150940-db795c43ed67 h1:VXLJrSJHXfGKG3n4vxk2hLgMxWH0R1luPMJkcmdgWY8=
 github.com/golang/protobuf v1.3.2 h1:6nsPYzhq5kReh6QImI3k5qWzO4PEbvbIW2cwSfR/6xs=
 github.com/golang/protobuf v1.3.2/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

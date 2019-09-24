@@ -1,11 +1,11 @@
 package main
 
 import (
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/binanceapi"
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/candle"
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/candlemodel"
-	myTesting "ehpc.io/bull-rider/exchange-candle-service/pkg/testing"
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/transport"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/binanceapi"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candlemodel"
+	myTesting "github.com/ehpc/bull-rider-exchange-candle-service/pkg/testing"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

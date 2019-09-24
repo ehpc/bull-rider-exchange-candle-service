@@ -1,8 +1,8 @@
 package binanceapi
 
 import (
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/candle"
-	"ehpc.io/bull-rider/exchange-candle-service/pkg/transport"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
+	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 )
 
 const apiURL = "https://api.binance.com"
