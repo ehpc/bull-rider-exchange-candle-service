@@ -7,7 +7,7 @@ import (
 // TransportMock is a mock for transport layer
 type TransportMock struct {
 	sentMessages       []transport.Message
-	receivableMessages []transport.Message
+	receivableMessages map[string][]transport.Message
 }
 
 // Send sends a message to a fake receiver
@@ -17,16 +17,25 @@ func (t *TransportMock) Send(message transport.Message) bool {
 }
 
 // Receive receives fake message
-func (t *TransportMock) Receive() transport.Message {
-	message, x := t.receivableMessages[len(t.receivableMessages)-1],
-		t.receivableMessages[:len(t.receivableMessages)-1]
-	t.receivableMessages = x
-	return message
+func (t *TransportMock) Receive(params transport.RequestParams) chan transport.Message {
+	hash := params.Hash()
+	messages := t.receivableMessages[hash]
+	len := len(messages)
+	message, x := messages[len-1], messages[:len-1]
+	t.receivableMessages[hash] = x
+	ch := make(chan transport.Message, 1)
+	ch <- message
+	return ch
 }
 
-// AddReceivableMessage add message which can be received with Receive
-func (t *TransportMock) AddReceivableMessage(message transport.Message) {
-	t.receivableMessages = append(t.receivableMessages, message)
+// AddReceivableMessage adds a message which can be received with
+// Receive for specified request parameters
+func (t *TransportMock) AddReceivableMessage(message transport.Message, params transport.RequestParams) {
+	hash := params.Hash()
+	if t.receivableMessages == nil {
+		t.receivableMessages = make(map[string][]transport.Message)
+	}
+	t.receivableMessages[hash] = append(t.receivableMessages[hash], message)
 }
 
 // GetLastSentMessageAsString returns last sent message as string

@@ -10,16 +10,22 @@ import (
 	"testing"
 )
 
-const testCandlesNumber = 2
-
 func TestMainFlow(t *testing.T) {
+	const testCandlesCount= 2
+	
 	// Preparing mock binance.com transport
 	apiTransport := myTesting.TransportMock{}
-	apiTransport.AddReceivableMessage(transport.Message{
-		Body: []byte(
-			myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, 2),
-		),
-	})
+	apiTransport.AddReceivableMessage(
+		transport.Message{
+			Body: []byte(
+				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
+			),
+		},
+		binanceapi.GetCandlesRequestParams{
+			Symbol: candle.IOTAUSDT,
+			Interval: candle.Interval1h,
+		},
+	)
 
 	// Fetching data from Binance
 	api := binanceapi.NewBinanceAPI(&apiTransport)
