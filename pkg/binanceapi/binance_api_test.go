@@ -116,4 +116,8 @@ func TestGetCandles(t *testing.T) {
 	}
 	assert.NotEmpty(t, interval15mCandles)
 	assert.NotEmpty(t, interval1hCandles)
+
+	// Checking inner values
+	assert.Equal(t, int64(1561622400000), candles[0].OpenTime)
+	assert.Equal(t, 0.42680000, candles[0].High)
 }

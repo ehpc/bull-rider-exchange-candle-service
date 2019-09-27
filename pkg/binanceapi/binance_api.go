@@ -54,11 +54,11 @@ func (api *BinanceAPI) GetCandles(pairs []candle.Pair, intervals []candle.Interv
 			)
 		}
 	}
-	candles := make([]candle.Candle, makeCandlesCount)
+	var candles []candle.Candle
 	// Wait for all candles and aggregate results
 	for _, result := range(results) {
 		message := <-result.Channel
-		candlesJSON := make([]CandleJSON, makeCandlesCount)
+		var candlesJSON []CandleJSON
 		if err := json.Unmarshal(message.Body, &candlesJSON); err != nil {
 			return nil, err
 		}

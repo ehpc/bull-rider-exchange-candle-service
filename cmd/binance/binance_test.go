@@ -5,8 +5,10 @@ import (
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candlemodel"
 	myTesting "github.com/ehpc/bull-rider-exchange-candle-service/pkg/testing"
+	protoCandle "github.com/ehpc/bull-rider/protobuf/go/candle"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 	"github.com/stretchr/testify/assert"
+	"github.com/golang/protobuf/proto"
 	"testing"
 )
 
@@ -23,7 +25,7 @@ func TestMainFlow(t *testing.T) {
 		},
 		binanceapi.GetCandlesRequestParams{
 			Symbol: candle.PairIOTAUSDT,
-			Interval: candle.Interval1h,
+			Interval: candle.Interval15m,
 		},
 	)
 
@@ -31,7 +33,7 @@ func TestMainFlow(t *testing.T) {
 	api := binanceapi.NewBinanceAPI(&apiTransport)
 	candles, err := api.GetCandles(
 		[]candle.Pair{candle.PairIOTAUSDT},
-		[]candle.Interval{candle.Interval1h},
+		[]candle.Interval{candle.Interval15m},
 	)
 	assert.NoError(t, err)
 
@@ -41,11 +43,18 @@ func TestMainFlow(t *testing.T) {
 	model.AddCandles(candles)
 
 	// Verifying acceptable outgoing message format
+	protoCandles := protoCandle.Candles{
+		Candles: []*protoCandle.Candle{
+			&myTesting.BinanceIOTAUSDT15mCandleExampleProtobuf,
+		},
+	}
+	protoCandlesMarshaled, err := proto.Marshal(&protoCandles)
+	assert.NoError(t, err)
 	lastSentMessage, ok := modelTransport.GetLastSentMessage()
 	assert.True(t, ok)
 	assert.Equal(
 		t,
-		myTesting.BinanceCandleExampleProtobufMarshaled,
+		protoCandlesMarshaled,
 		lastSentMessage.Body,
 	)
 }
