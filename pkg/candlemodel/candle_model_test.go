@@ -16,7 +16,7 @@ func TestCandleModel(t *testing.T) {
 		Low:          0.24800000,
 		Volume:       722111.71000000,
 		QuoteVolume:  180376.63551900,
-		TradesNumber: 599,
+		TradesCount: 599,
 	}
 	t.Run("Add a candle", func(t *testing.T) {
 		candleModel := CandleModel{}

@@ -1,9 +1,9 @@
 package candle
 
 //Exchange is an exchange name
-type Exchange uint8
+type Exchange string
 
 // All possible exchanges
 const (
-	Binance Exchange = iota
+	ExchangeBinance Exchange = "binance"
 )

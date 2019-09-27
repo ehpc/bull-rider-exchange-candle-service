@@ -1,12 +1,24 @@
 package binanceapi
 
 import (
+	"fmt"
+	"encoding/json"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 	myTesting "github.com/ehpc/bull-rider-exchange-candle-service/pkg/testing"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestCandlesJSON(t *testing.T) {
+	jsonData := fmt.Sprintf("[%s]", myTesting.BinanceCandleExampleJSON)
+	candles := make([]CandleJSON, 1)
+	err := json.Unmarshal([]byte(jsonData), &candles)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, candles)
+	assert.Equal(t, int64(1561622400000), candles[0].OpenTime)
+	assert.Equal(t, "0.42680000", candles[0].High)
+}
 
 func TestGetCandles(t *testing.T) {
 	const testCandlesCount = 10
@@ -20,7 +32,7 @@ func TestGetCandles(t *testing.T) {
 			),
 		},
 		GetCandlesRequestParams{
-			Symbol: candle.IOTAUSDT,
+			Symbol: candle.PairIOTAUSDT,
 			Interval: candle.Interval15m,
 		},
 	)
@@ -31,7 +43,7 @@ func TestGetCandles(t *testing.T) {
 			),
 		},
 		GetCandlesRequestParams{
-			Symbol: candle.IOTAUSDT,
+			Symbol: candle.PairIOTAUSDT,
 			Interval: candle.Interval1h,
 		},
 	)
@@ -42,7 +54,7 @@ func TestGetCandles(t *testing.T) {
 			),
 		},
 		GetCandlesRequestParams{
-			Symbol: candle.ETHUSDT,
+			Symbol: candle.PairETHUSDT,
 			Interval: candle.Interval15m,
 		},
 	)
@@ -53,25 +65,26 @@ func TestGetCandles(t *testing.T) {
 			),
 		},
 		GetCandlesRequestParams{
-			Symbol: candle.ETHUSDT,
+			Symbol: candle.PairETHUSDT,
 			Interval: candle.Interval1h,
 		},
 	)
 
 	// Getting candles
 	api := NewBinanceAPI(&apiTransport)
-	pairs := []candle.Pair{candle.IOTAUSDT, candle.ETHUSDT}
+	pairs := []candle.Pair{candle.PairIOTAUSDT, candle.PairETHUSDT}
 	intervals := []candle.Interval{candle.Interval15m, candle.Interval1h}
-	candles := api.GetCandles(pairs, intervals)
+	candles, err := api.GetCandles(pairs, intervals)
+	assert.NoError(t, err)
 
 	// Checking that all pairs are present
 	iotaCandles := []candle.Candle{}
 	ethCandles := []candle.Candle{}
 	for _, x := range candles {
 		switch x.Pair {
-		case candle.IOTAUSDT:
+		case candle.PairIOTAUSDT:
 			iotaCandles = append(iotaCandles, x)
-		case candle.ETHUSDT:
+		case candle.PairETHUSDT:
 			ethCandles = append(ethCandles, x)
 		}
 	}

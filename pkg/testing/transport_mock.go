@@ -24,6 +24,7 @@ func (t *TransportMock) Receive(params transport.RequestParams) chan transport.M
 	message, x := messages[len-1], messages[:len-1]
 	t.receivableMessages[hash] = x
 	ch := make(chan transport.Message, 1)
+	defer close(ch)
 	ch <- message
 	return ch
 }

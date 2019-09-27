@@ -22,17 +22,18 @@ func TestMainFlow(t *testing.T) {
 			),
 		},
 		binanceapi.GetCandlesRequestParams{
-			Symbol: candle.IOTAUSDT,
+			Symbol: candle.PairIOTAUSDT,
 			Interval: candle.Interval1h,
 		},
 	)
 
 	// Fetching data from Binance
 	api := binanceapi.NewBinanceAPI(&apiTransport)
-	candles := api.GetCandles(
-		[]candle.Pair{candle.IOTAUSDT},
+	candles, err := api.GetCandles(
+		[]candle.Pair{candle.PairIOTAUSDT},
 		[]candle.Interval{candle.Interval1h},
 	)
+	assert.NoError(t, err)
 
 	// Pushing data to recipients
 	modelTransport := myTesting.TransportMock{}
