@@ -11,9 +11,9 @@ type TransportMock struct {
 }
 
 // Send sends a message to a fake receiver
-func (t *TransportMock) Send(message transport.Message) bool {
+func (t *TransportMock) Send(message transport.Message) (bool, error) {
 	t.sentMessages = append(t.sentMessages, message)
-	return true
+	return true, nil
 }
 
 // Receive receives fake message

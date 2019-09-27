@@ -21,6 +21,6 @@ func (p EmptyRequestParams) Map() map[string]string {
 
 //Transport is a message transport interface
 type Transport interface {
-	Send(Message) bool
+	Send(Message) (bool, error)
 	Receive(RequestParams) chan Message
 }

@@ -50,7 +50,7 @@ var BinanceIOTAUSDT15mCandleExampleProtobuf = protoCandle.Candle{
 	Volume: 2589747.41000000,
 	CloseTime: 1561636799999,
 	QuoteVolume: 1073262.29118300,
-	TradesCount: 0,
+	TradesCount: 5370,
 }
 
 // BinanceIOTAUSDT15mCandleExampleProtobufMarshaled is an example of Binance candle 

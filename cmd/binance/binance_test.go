@@ -13,7 +13,7 @@ import (
 )
 
 func TestMainFlow(t *testing.T) {
-	const testCandlesCount= 2
+	const testCandlesCount= 1
 	
 	// Preparing mock binance.com transport
 	apiTransport := myTesting.TransportMock{}
