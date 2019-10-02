@@ -23,14 +23,16 @@ func TestMainFlow(t *testing.T) {
 				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
 			),
 		},
-		binanceapi.GetCandlesRequestParams{
-			Symbol: candle.PairIOTAUSDT,
-			Interval: candle.Interval15m,
+		transport.RequestParams{
+			"HTTPMethod": "GET",
+			"HTTPPath": "/api/v1/klines",
+			"symbol": candle.PairIOTAUSDT,
+			"interval": candle.Interval15m,
 		},
 	)
 
 	// Fetching data from Binance
-	api := binanceapi.NewBinanceAPI(&apiTransport)
+	api := binanceapi.NewAPI(&apiTransport)
 	candles, err := api.GetCandles(
 		[]candle.Pair{candle.PairIOTAUSDT},
 		[]candle.Interval{candle.Interval15m},
@@ -40,7 +42,9 @@ func TestMainFlow(t *testing.T) {
 	// Pushing data to recipients
 	modelTransport := myTesting.TransportMock{}
 	model := candlemodel.NewCandleModel(&modelTransport)
-	model.AddCandles(candles)
+	result, err := model.AddCandles(candles)
+	assert.NoError(t, err)
+	assert.True(t, result)
 
 	// Verifying acceptable outgoing message format
 	protoCandles := protoCandle.Candles{
@@ -57,4 +61,23 @@ func TestMainFlow(t *testing.T) {
 		protoCandlesMarshaled,
 		lastSentMessage.Body,
 	)
+}
+
+func TestRealFlow(t *testing.T) {
+	// // Creating API transport
+	// apiTransport := transport.NewHTTPTransport(binanceapi.APIURL)
+	// // Fetching data from Binance
+	// api := binanceapi.NewAPI(&apiTransport)
+	// candles, err := api.GetCandles(
+	// 	[]candle.Pair{candle.PairIOTAUSDT},
+	// 	[]candle.Interval{candle.Interval15m},
+	// )
+	// assert.NoError(t, err)
+	// // Creating model transport
+	// modelTransport := transport.NewRabbitMQTransport()
+	// // Pushing data to recipients
+	// model := candlemodel.NewCandleModel(&modelTransport)
+	// result, err := model.AddCandles(candles)
+	// assert.NoError(t, err)
+	// assert.True(t, result)
 }

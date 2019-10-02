@@ -31,9 +31,11 @@ func TestGetCandles(t *testing.T) {
 				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
 			),
 		},
-		GetCandlesRequestParams{
-			Symbol: candle.PairIOTAUSDT,
-			Interval: candle.Interval15m,
+		transport.RequestParams{
+			"HTTPMethod": "GET",
+			"HTTPPath": "/api/v1/klines",
+			"symbol": candle.PairIOTAUSDT,
+			"interval": candle.Interval15m,
 		},
 	)
 	apiTransport.AddReceivableMessage(
@@ -42,9 +44,11 @@ func TestGetCandles(t *testing.T) {
 				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
 			),
 		},
-		GetCandlesRequestParams{
-			Symbol: candle.PairIOTAUSDT,
-			Interval: candle.Interval1h,
+		transport.RequestParams{
+			"HTTPMethod": "GET",
+			"HTTPPath": "/api/v1/klines",
+			"symbol": candle.PairIOTAUSDT,
+			"interval": candle.Interval1h,
 		},
 	)
 	apiTransport.AddReceivableMessage(
@@ -53,9 +57,11 @@ func TestGetCandles(t *testing.T) {
 				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
 			),
 		},
-		GetCandlesRequestParams{
-			Symbol: candle.PairETHUSDT,
-			Interval: candle.Interval15m,
+		transport.RequestParams{
+			"HTTPMethod": "GET",
+			"HTTPPath": "/api/v1/klines",
+			"symbol": candle.PairETHUSDT,
+			"interval": candle.Interval15m,
 		},
 	)
 	apiTransport.AddReceivableMessage(
@@ -64,14 +70,16 @@ func TestGetCandles(t *testing.T) {
 				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
 			),
 		},
-		GetCandlesRequestParams{
-			Symbol: candle.PairETHUSDT,
-			Interval: candle.Interval1h,
+		transport.RequestParams{
+			"HTTPMethod": "GET",
+			"HTTPPath": "/api/v1/klines",
+			"symbol": candle.PairETHUSDT,
+			"interval": candle.Interval1h,
 		},
 	)
 
 	// Getting candles
-	api := NewBinanceAPI(&apiTransport)
+	api := NewAPI(&apiTransport)
 	pairs := []candle.Pair{candle.PairIOTAUSDT, candle.PairETHUSDT}
 	intervals := []candle.Interval{candle.Interval15m, candle.Interval1h}
 	candles, err := api.GetCandles(pairs, intervals)

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
+	// "github.com/ehpc/bull-rider-exchange-candle-service/pkg/binanceapi"
+	// "github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
+	// "github.com/ehpc/bull-rider-exchange-candle-service/pkg/candlemodel"
 )
 
 func main() {
-	szz_zz := 10
-	szz_zz += 1
-	fmt.Printf("hello, world\n")
+
 }
