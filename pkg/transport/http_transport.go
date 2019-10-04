@@ -14,8 +14,8 @@ type HTTPTransport struct {
 }
 
 // NewHTTPTransport creates HTTPTransport instance
-func NewHTTPTransport(url string) HTTPTransport {
-	return HTTPTransport{
+func NewHTTPTransport(url string) *HTTPTransport {
+	return &HTTPTransport{
 		URL: url,
 	}
 }
@@ -28,9 +28,7 @@ func (t *HTTPTransport) Send(m Message) (bool, error) {
 // Receive a message via HTTP
 func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 	messageChannel := make(chan Message, 1)
-	defer close(messageChannel)
 	errorChannel := make(chan error, 1)
-	defer close(errorChannel)
 
 	go func(){
 		// Creating proper URL
@@ -40,13 +38,6 @@ func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 			return
 		}
 		u.Path = path.Join(u.Path, rp["HTTPPath"])
-
-		// Creating a request
-		req, err := http.NewRequest(rp["HTTPMethod"], u.String(), nil)
-		if err != nil {
-			errorChannel <- err
-			return
-		}
 
 		// Extracting data
 		data := make(map[string]string)
@@ -64,7 +55,7 @@ func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 			for k, v := range data {
 				q.Add(k, v)
 			}
-			req.URL.RawQuery = q.Encode()
+			u.RawQuery = q.Encode()
 			resp, err = http.Get(u.String())
 		default:
 			formData := url.Values{}
@@ -75,6 +66,8 @@ func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 		}
 		if err != nil {
 			errorChannel <- err
+			close(messageChannel)
+			close(errorChannel)
 			return
 		}
 		
@@ -83,13 +76,19 @@ func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			errorChannel <- err
+			close(messageChannel)
+			close(errorChannel)
 			return
 		}
-		messageChannel <- Message{
-			Body: body,
-		}
+		messageChannel <- MessageUnmarshal(body)
+		close(messageChannel)
+		close(errorChannel)
 	}()
 
 	return messageChannel, errorChannel
 }
 
+// Close closes transport
+func (t*HTTPTransport) Close() error {
+	return nil
+}

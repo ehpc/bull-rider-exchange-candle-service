@@ -24,7 +24,7 @@ func TestGetCandles(t *testing.T) {
 	const testCandlesCount = 10
 
 	// Populating fake data
-	apiTransport := myTesting.TransportMock{}
+	apiTransport := myTesting.NewTransportMock()
 	apiTransport.AddReceivableMessage(
 		transport.Message{
 			Body: []byte(
@@ -79,7 +79,7 @@ func TestGetCandles(t *testing.T) {
 	)
 
 	// Getting candles
-	api := NewAPI(&apiTransport)
+	api := NewAPI(apiTransport)
 	pairs := []candle.Pair{candle.PairIOTAUSDT, candle.PairETHUSDT}
 	intervals := []candle.Interval{candle.Interval15m, candle.Interval1h}
 	candles, err := api.GetCandles(pairs, intervals)

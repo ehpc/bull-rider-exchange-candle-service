@@ -13,10 +13,10 @@ import (
 )
 
 func TestMainFlow(t *testing.T) {
-	const testCandlesCount= 1
+	const testCandlesCount = 2
 	
 	// Preparing mock binance.com transport
-	apiTransport := myTesting.TransportMock{}
+	apiTransport := myTesting.NewTransportMock()
 	apiTransport.AddReceivableMessage(
 		transport.Message{
 			Body: []byte(
@@ -32,52 +32,62 @@ func TestMainFlow(t *testing.T) {
 	)
 
 	// Fetching data from Binance
-	api := binanceapi.NewAPI(&apiTransport)
+	api := binanceapi.NewAPI(apiTransport)
 	candles, err := api.GetCandles(
 		[]candle.Pair{candle.PairIOTAUSDT},
 		[]candle.Interval{candle.Interval15m},
 	)
 	assert.NoError(t, err)
 
-	// Pushing data to recipients
-	modelTransport := myTesting.TransportMock{}
-	model := candlemodel.NewCandleModel(&modelTransport)
-	result, err := model.AddCandles(candles)
-	assert.NoError(t, err)
-	assert.True(t, result)
+	// Creating model
+	modelTransport := myTesting.NewTransportMock()
+	model := candlemodel.NewCandleModel(modelTransport)
 
-	// Verifying acceptable outgoing message format
-	protoCandles := protoCandle.Candles{
-		Candles: []*protoCandle.Candle{
-			&myTesting.BinanceIOTAUSDT15mCandleExampleProtobuf,
-		},
-	}
-	protoCandlesMarshaled, err := proto.Marshal(&protoCandles)
-	assert.NoError(t, err)
-	lastSentMessage, ok := modelTransport.GetLastSentMessage()
-	assert.True(t, ok)
-	assert.Equal(
-		t,
-		protoCandlesMarshaled,
-		lastSentMessage.Body,
-	)
-}
+	t.Run("AddCandles", func (t *testing.T) {
+		// Pushing data to recipients
+		result, err := model.AddCandles(candles)
+		assert.NoError(t, err)
+		assert.True(t, result)
 
-func TestRealFlow(t *testing.T) {
-	// // Creating API transport
-	// apiTransport := transport.NewHTTPTransport(binanceapi.APIURL)
-	// // Fetching data from Binance
-	// api := binanceapi.NewAPI(&apiTransport)
-	// candles, err := api.GetCandles(
-	// 	[]candle.Pair{candle.PairIOTAUSDT},
-	// 	[]candle.Interval{candle.Interval15m},
-	// )
-	// assert.NoError(t, err)
-	// // Creating model transport
-	// modelTransport := transport.NewRabbitMQTransport()
-	// // Pushing data to recipients
-	// model := candlemodel.NewCandleModel(&modelTransport)
-	// result, err := model.AddCandles(candles)
-	// assert.NoError(t, err)
-	// assert.True(t, result)
+		// Verifying acceptable outgoing message format
+		protoCandles := protoCandle.Candles{
+			Candles: []*protoCandle.Candle{
+				&myTesting.BinanceIOTAUSDT15mCandleExampleProtobuf,
+				&myTesting.BinanceIOTAUSDT15mCandleExampleProtobuf,
+			},
+		}
+		protoCandlesMarshaled, err := proto.Marshal(&protoCandles)
+		assert.NoError(t, err)
+		lastSentMessage, ok := modelTransport.GetLastSentMessage()
+		assert.True(t, ok)
+		assert.Equal(
+			t,
+			protoCandlesMarshaled,
+			lastSentMessage.Body,
+		)
+	})
+
+	t.Run("AddCandle", func (t *testing.T) {
+		// Pushing data to recipients
+		result, err := model.AddCandle(candles[0])
+		assert.NoError(t, err)
+		assert.True(t, result)
+
+		// Verifying acceptable outgoing message format
+		protoCandles := protoCandle.Candles{
+			Candles: []*protoCandle.Candle{
+				&myTesting.BinanceIOTAUSDT15mCandleExampleProtobuf,
+			},
+		}
+		protoCandlesMarshaled, err := proto.Marshal(&protoCandles)
+		assert.NoError(t, err)
+		lastSentMessage, ok := modelTransport.GetLastSentMessage()
+		assert.True(t, ok)
+		assert.Equal(
+			t,
+			protoCandlesMarshaled,
+			lastSentMessage.Body,
+		)
+	})
+
 }

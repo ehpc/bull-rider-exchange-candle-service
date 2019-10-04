@@ -1,11 +1,13 @@
 package main
 
 import (
-	// "github.com/ehpc/bull-rider-exchange-candle-service/pkg/binanceapi"
-	// "github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
-	// "github.com/ehpc/bull-rider-exchange-candle-service/pkg/candlemodel"
+	"github.com/joho/godotenv"
+	"log"
 )
 
 func main() {
-
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Can't load `.env`")
+	}
 }

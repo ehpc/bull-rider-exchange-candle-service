@@ -1,7 +1,7 @@
 package testing
 
 import (
-	"fmt"
+	"time"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 )
 
@@ -9,6 +9,11 @@ import (
 type TransportMock struct {
 	sentMessages       []transport.Message
 	receivableMessages map[string][]transport.Message
+}
+
+// NewTransportMock is a constructor for TransportMock
+func NewTransportMock() *TransportMock {
+	return &TransportMock{}
 }
 
 // Send sends a message to a fake receiver
@@ -22,13 +27,20 @@ func (t *TransportMock) Receive(params transport.RequestParams) (chan transport.
 	hash := params.Hash()
 	messages := t.receivableMessages[hash]
 	len := len(messages)
-	fmt.Println("======================================",len, hash)
 	message, x := messages[len-1], messages[:len-1]
 	t.receivableMessages[hash] = x
 	ch := make(chan transport.Message, 1)
-	defer close(ch)
-	ch <- message
+	go func(){
+		time.Sleep(50 * time.Millisecond)
+		ch <- message
+		close(ch)
+	}()
 	return ch, nil
+}
+
+// Close closes transport
+func (t *TransportMock) Close() error {
+	return nil
 }
 
 // AddReceivableMessage adds a message which can be received with

@@ -43,8 +43,8 @@ func TestCandleModel(t *testing.T) {
 		},
 	}
 	t.Run("Successfully add one candle", func(t *testing.T) {
-		modelTransport := myTesting.TransportMock{}
-		candleModel := NewCandleModel(&modelTransport)
+		modelTransport := myTesting.NewTransportMock()
+		candleModel := NewCandleModel(modelTransport)
 		got, err := candleModel.AddCandle(testCandle)
 		assert.NoError(t, err)
 		assert.Equal(t, true, got)

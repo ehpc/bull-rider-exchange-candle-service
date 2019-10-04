@@ -40,7 +40,7 @@ func (c *CandleJSON) UnmarshalJSON(data []byte) error {
 	expectedLen := len(tuple)
 	err := json.Unmarshal(data, &tuple)
 	if expectedLen != len(tuple) {
-		return errors.New("Unexpected tuple length")
+		return errors.New("unexpected tuple length")
 	}
 	return err
 }

@@ -23,6 +23,11 @@ lint:
 test:
 	$(GOTEST) ./...
 
+test-integration:
+	$(GOTEST) -tags integration ./...
+
+test-all: test test-integration
+
 cover:
 	($GOTEST) -cover ./...
 
