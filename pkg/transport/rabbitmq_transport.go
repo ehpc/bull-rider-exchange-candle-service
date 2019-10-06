@@ -8,11 +8,12 @@ import(
 
 // RabbitMQTransport is a transport via RabbitMQ
 type RabbitMQTransport struct {
-	Connection *amqp.Connection
-	Channel *amqp.Channel
-	Exchange string
-	RoutingKey string
-	Options RabbitMQTransportOptions
+	connection *amqp.Connection // AMQP connection
+	channel *amqp.Channel // AMQP channel
+	exchange string // AMQP exchange name
+	routingKey string // AMQP routing key
+	queue amqp.Queue // AMQP queue
+	options RabbitMQTransportOptions // Special AMQP options
 }
 
 // RabbitMQTransportOptions are options for RabbitMQ transport
@@ -54,24 +55,63 @@ func NewRabbitMQTransport(exchange string, routingKey string, options RabbitMQTr
 		conn.Close()
 		return nil, err
 	}
+	// Create queue
+	queue, err := ch.QueueDeclare(
+		routingKey, // name
+		durable, // durable
+		autoDeleted, // delete when unused
+		false, // exclusive
+		false, // no-wait
+		nil, // arguments
+	)
+	if err != nil {
+		ch.Close()
+		conn.Close()
+		return nil, err
+	}
+	// Bind queue
+	err = ch.QueueBind(
+		queue.Name, // queue name
+		routingKey, // routing key
+		exchange, // exchange
+		false, // no-wait
+		nil, // arguments
+	)
+	if err != nil {
+		ch.Close()
+		conn.Close()
+		return nil, err
+	}
+	// Define QoS
+	err = ch.Qos(
+		1, // prefetch count
+		0, // prefetch size
+		false, // global
+	)
+	if err != nil {
+		ch.Close()
+		conn.Close()
+		return nil, err
+	}
 	return &RabbitMQTransport{
-		Connection: conn,
-		Channel: ch,
-		Exchange: exchange,
-		RoutingKey: routingKey,
-		Options: options,
+		connection: conn,
+		channel: ch,
+		exchange: exchange,
+		routingKey: routingKey,
+		queue: queue,
+		options: options,
 	}, nil
 }
 
 // Send sends a message via RabbitMQ
 func (t *RabbitMQTransport) Send(m Message) (bool, error) {
 	deliveryMode := amqp.Persistent
-	if t.Options.Temporary {
+	if t.options.Temporary {
 		deliveryMode = amqp.Transient
 	}
-	err := t.Channel.Publish(
-		t.Exchange, // exchange
-		t.RoutingKey, // routing key
+	err := t.channel.Publish(
+		t.exchange, // exchange
+		t.routingKey, // routing key
 		false, // mandatory
 		false, // immediate
 		amqp.Publishing{
@@ -96,9 +136,9 @@ func (t *RabbitMQTransport) Receive(rp RequestParams) (chan Message, chan error)
 
 // Close closes transport
 func (t *RabbitMQTransport) Close() error {
-	err := t.Channel.Close()
+	err := t.channel.Close()
 	if err != nil {
 		return err
 	}
-	return t.Connection.Close()
+	return t.connection.Close()
 }

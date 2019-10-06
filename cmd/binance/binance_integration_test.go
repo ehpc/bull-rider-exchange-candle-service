@@ -42,7 +42,7 @@ func TestRealFlow(t *testing.T) {
 	exchangeName := "test" + strconv.Itoa(rand.Int())
 	modelTransport, err := transport.NewRabbitMQTransport(
 		exchangeName,
-		"test",
+		exchangeName,
 		transport.RabbitMQTransportOptions{
 			Temporary: true,
 		},
