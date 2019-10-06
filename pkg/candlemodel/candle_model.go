@@ -1,10 +1,11 @@
 package candlemodel
 
 import (
+	"github.com/golang/protobuf/proto"
+
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 	protoCandle "github.com/ehpc/bull-rider/protobuf/go/candle"
-	"github.com/golang/protobuf/proto"
 )
 
 // CandleModel is a model for storing candles

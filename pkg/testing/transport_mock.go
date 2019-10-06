@@ -2,6 +2,7 @@ package testing
 
 import (
 	"time"
+	
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 )
 

@@ -1,15 +1,17 @@
 package main
 
 import (
+	"testing"
+	
+	"github.com/stretchr/testify/assert"
+	"github.com/golang/protobuf/proto"
+	
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/binanceapi"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candlemodel"
 	myTesting "github.com/ehpc/bull-rider-exchange-candle-service/pkg/testing"
 	protoCandle "github.com/ehpc/bull-rider/protobuf/go/candle"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
-	"github.com/stretchr/testify/assert"
-	"github.com/golang/protobuf/proto"
-	"testing"
 )
 
 func TestMainFlow(t *testing.T) {

@@ -1,12 +1,14 @@
 package candlemodel
 
 import (
+	"testing"
+	
+	"github.com/golang/protobuf/proto"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 	myTesting "github.com/ehpc/bull-rider-exchange-candle-service/pkg/testing"
 	protoCandle "github.com/ehpc/bull-rider/protobuf/go/candle"
-	"github.com/golang/protobuf/proto"
-	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCandleModel(t *testing.T) {

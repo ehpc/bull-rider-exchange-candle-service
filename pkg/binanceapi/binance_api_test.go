@@ -2,12 +2,14 @@ package binanceapi
 
 import (
 	"fmt"
+	"testing"
 	"encoding/json"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 	myTesting "github.com/ehpc/bull-rider-exchange-candle-service/pkg/testing"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
-	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCandlesJSON(t *testing.T) {

@@ -3,6 +3,7 @@ package binanceapi
 import (
 	"strconv"
 	"encoding/json"
+	
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 )

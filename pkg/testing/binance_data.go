@@ -2,6 +2,7 @@ package testing
 
 import (
 	"github.com/golang/protobuf/proto"
+	
 	protoCandle "github.com/ehpc/bull-rider/protobuf/go/candle"
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/candle"
 )
