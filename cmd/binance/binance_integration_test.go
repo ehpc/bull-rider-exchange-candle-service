@@ -18,18 +18,22 @@ import (
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 )
 
-func TestRealFlow(t *testing.T) {
+func TestMain(m *testing.M) {
 	// Loading configuration
 	err := godotenv.Load("../../.env")
 	if err != nil {
 		dir, _ := os.Getwd()
 		log.Fatal(err, dir)
 	}
+	os.Exit(m.Run())
+}
+
+func TestIntegratedRESTFlow(t *testing.T) {
 	// Creating API transport
-	apiTransport := transport.NewHTTPTransport(binanceapi.APIURL)
+	apiTransport := transport.NewHTTPTransport(os.Getenv("BINANCE_REST_API_URL"))
 	defer apiTransport.Close()
 	// Fetching data from Binance
-	api := binanceapi.NewAPI(apiTransport)
+	api := binanceapi.NewAPI(apiTransport, nil)
 	candles, err := api.GetCandles(
 		[]candle.Pair{candle.PairIOTAUSDT},
 		[]candle.Interval{candle.Interval15m},
@@ -41,6 +45,7 @@ func TestRealFlow(t *testing.T) {
 	// Creating model transport
 	exchangeName := "test" + strconv.Itoa(rand.Int())
 	modelTransport, err := transport.NewRabbitMQTransport(
+		os.Getenv("MESSAGE_BROKER_URL"),
 		exchangeName,
 		exchangeName,
 		transport.RabbitMQTransportOptions{
@@ -55,4 +60,8 @@ func TestRealFlow(t *testing.T) {
 	assert.True(t, result)
 	err = modelTransport.Close()
 	assert.NoError(t, err)
+}
+
+func TestIntegratedWebsocketFlow(t *testing.T) {
+
 }

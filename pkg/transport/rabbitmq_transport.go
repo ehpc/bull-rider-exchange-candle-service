@@ -1,7 +1,6 @@
 package transport
 
 import(
-	"os"
 	"errors"
 	
 	"github.com/streadway/amqp"
@@ -9,6 +8,7 @@ import(
 
 // RabbitMQTransport is a transport via RabbitMQ
 type RabbitMQTransport struct {
+	url string // AQMP URL
 	connection *amqp.Connection // AMQP connection
 	channel *amqp.Channel // AMQP channel
 	exchange string // AMQP exchange name
@@ -23,9 +23,9 @@ type RabbitMQTransportOptions struct {
 }
 
 // NewRabbitMQTransport is a constructor for RabbitMQ transport
-func NewRabbitMQTransport(exchange string, routingKey string, options RabbitMQTransportOptions) (*RabbitMQTransport, error) {
+func NewRabbitMQTransport(url string, exchange string, routingKey string, options RabbitMQTransportOptions) (*RabbitMQTransport, error) {
 	// Connect to broker
-	conn, err := amqp.Dial(os.Getenv("BROKER_URL"))
+	conn, err := amqp.Dial(url)
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +95,7 @@ func NewRabbitMQTransport(exchange string, routingKey string, options RabbitMQTr
 		return nil, err
 	}
 	return &RabbitMQTransport{
+		url: url,
 		connection: conn,
 		channel: ch,
 		exchange: exchange,

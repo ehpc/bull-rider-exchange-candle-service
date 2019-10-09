@@ -33,6 +33,3 @@ cover:
 
 build:
 	$(GOBUILD) -o $(BINDIR)/binance-candle-service $(MODNAME)/cmd/binance
-
-protobuf:
-	$(PROTOC) -I$(CURDIR)/../bull-rider/protobuf/ --go_out=$(CURDIR)/pkg/protobuf/ $(CURDIR)/../bull-rider/protobuf/*.proto

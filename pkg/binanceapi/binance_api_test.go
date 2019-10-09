@@ -13,16 +13,27 @@ import (
 )
 
 func TestCandlesJSON(t *testing.T) {
-	jsonData := fmt.Sprintf("[%s]", myTesting.BinanceCandleExampleJSON)
-	candles := make([]CandleJSON, 1)
-	err := json.Unmarshal([]byte(jsonData), &candles)
-	assert.NoError(t, err)
-	assert.NotEmpty(t, candles)
-	assert.Equal(t, int64(1561622400000), candles[0].OpenTime)
-	assert.Equal(t, "0.42680000", candles[0].High)
+	t.Run("REST candle", func (t *testing.T) {
+		jsonData := fmt.Sprintf("[%s]", myTesting.BinanceCandleExampleRESTJSON)
+		candles := make([]CandleRESTJSON, 1)
+		err := json.Unmarshal([]byte(jsonData), &candles)
+		assert.NoError(t, err)
+		assert.NotEmpty(t, candles)
+		assert.Equal(t, int64(1561622400000), candles[0].OpenTime)
+		assert.Equal(t, "0.42680000", candles[0].High)
+	})
+	t.Run("Websocket candle", func (t *testing.T) {
+		jsonData := fmt.Sprintf("%s", myTesting.BinanceCandleExampleWebsocketJSON)
+		candle := CandleWebsocketJSON{}
+		err := json.Unmarshal([]byte(jsonData), &candle)
+		assert.NoError(t, err)
+		assert.Equal(t, "kline", candle.EventType)
+		assert.Equal(t, int64(123400000), candle.Kline.OpenTime)
+		assert.Equal(t, "0.0025", candle.Kline.High)
+	})
 }
 
-func TestGetCandles(t *testing.T) {
+func TestRESTAPI(t *testing.T) {
 	const testCandlesCount = 10
 
 	// Populating fake data
@@ -30,7 +41,7 @@ func TestGetCandles(t *testing.T) {
 	apiTransport.AddReceivableMessage(
 		transport.Message{
 			Body: []byte(
-				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
+				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleRESTJSON, testCandlesCount),
 			),
 		},
 		transport.RequestParams{
@@ -43,7 +54,7 @@ func TestGetCandles(t *testing.T) {
 	apiTransport.AddReceivableMessage(
 		transport.Message{
 			Body: []byte(
-				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
+				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleRESTJSON, testCandlesCount),
 			),
 		},
 		transport.RequestParams{
@@ -56,7 +67,7 @@ func TestGetCandles(t *testing.T) {
 	apiTransport.AddReceivableMessage(
 		transport.Message{
 			Body: []byte(
-				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
+				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleRESTJSON, testCandlesCount),
 			),
 		},
 		transport.RequestParams{
@@ -69,7 +80,7 @@ func TestGetCandles(t *testing.T) {
 	apiTransport.AddReceivableMessage(
 		transport.Message{
 			Body: []byte(
-				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
+				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleRESTJSON, testCandlesCount),
 			),
 		},
 		transport.RequestParams{
@@ -81,7 +92,7 @@ func TestGetCandles(t *testing.T) {
 	)
 
 	// Getting candles
-	api := NewAPI(apiTransport)
+	api := NewAPI(apiTransport, nil)
 	pairs := []candle.Pair{candle.PairIOTAUSDT, candle.PairETHUSDT}
 	intervals := []candle.Interval{candle.Interval15m, candle.Interval1h}
 	candles, err := api.GetCandles(pairs, intervals)

@@ -14,7 +14,7 @@ import (
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
 )
 
-func TestMainFlow(t *testing.T) {
+func TestRESTFlow(t *testing.T) {
 	const testCandlesCount = 2
 	
 	// Preparing mock binance.com transport
@@ -22,7 +22,7 @@ func TestMainFlow(t *testing.T) {
 	apiTransport.AddReceivableMessage(
 		transport.Message{
 			Body: []byte(
-				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleJSON, testCandlesCount),
+				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleRESTJSON, testCandlesCount),
 			),
 		},
 		transport.RequestParams{
@@ -34,7 +34,7 @@ func TestMainFlow(t *testing.T) {
 	)
 
 	// Fetching data from Binance
-	api := binanceapi.NewAPI(apiTransport)
+	api := binanceapi.NewAPI(apiTransport, nil)
 	candles, err := api.GetCandles(
 		[]candle.Pair{candle.PairIOTAUSDT},
 		[]candle.Interval{candle.Interval15m},
@@ -92,4 +92,34 @@ func TestMainFlow(t *testing.T) {
 		)
 	})
 
+}
+
+func TestWebsocketFlow(t *testing.T) {
+	const testCandlesCount = 2
+
+	// Preparing mock binance.com transport
+	apiTransport := myTesting.NewTransportMock()
+	apiTransport.AddReceivableMessage(
+		transport.Message{
+			Body: []byte(
+				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleWebsocketJSON, testCandlesCount),
+			),
+		},
+		nil,
+	)
+
+	// Fetching data from Binance
+	api := binanceapi.NewAPI(nil, apiTransport)
+	candleChannel, errorChannel := api.WaitForCandles(
+		[]candle.Pair{candle.PairIOTAUSDT},
+		[]candle.Interval{candle.Interval15m},
+	)
+	select{
+	case cndl := <-candleChannel:
+		assert.NotNil(t, cndl)
+		assert.Greater(t, cndl.OpenTime, int64(0))
+		assert.Greater(t, cndl.CloseTime, int64(0))
+	case err := <-errorChannel:
+		assert.NoError(t, err)
+	}
 }
