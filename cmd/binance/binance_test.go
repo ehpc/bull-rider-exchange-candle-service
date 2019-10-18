@@ -18,7 +18,7 @@ import (
 func TestRESTFlow(t *testing.T) {
 	const testCandlesCount = 2
 	
-	// Preparing mock binance.com transport
+	// Prepare mock binance.com transport
 	apiTransport := myTesting.NewTransportMock()
 	apiTransport.AddReceivableMessage(
 		transport.Message{
@@ -34,7 +34,7 @@ func TestRESTFlow(t *testing.T) {
 		},
 	)
 
-	// Fetching data from Binance
+	// Fetch data from Binance
 	api := binanceapi.NewAPI(apiTransport, nil)
 	candles, err := api.GetCandles(
 		[]candle.Pair{candle.PairIOTAUSDT},
@@ -42,17 +42,17 @@ func TestRESTFlow(t *testing.T) {
 	)
 	assert.NoError(t, err)
 
-	// Creating model
+	// Create model
 	modelTransport := myTesting.NewTransportMock()
 	model := candlemodel.NewCandleModel(modelTransport)
 
 	t.Run("AddCandles", func (t *testing.T) {
-		// Pushing data to recipients
+		// Push data to recipients
 		result, err := model.AddCandles(candles)
 		assert.NoError(t, err)
 		assert.True(t, result)
 
-		// Verifying acceptable outgoing message format
+		// Verify acceptable outgoing message format
 		protoCandles := protoCandle.Candles{
 			Candles: []*protoCandle.Candle{
 				&myTesting.BinanceIOTAUSDT15mCandleExampleProtobuf,
@@ -71,12 +71,12 @@ func TestRESTFlow(t *testing.T) {
 	})
 
 	t.Run("AddCandle", func (t *testing.T) {
-		// Pushing data to recipients
+		// Push data to recipients
 		result, err := model.AddCandle(candles[0])
 		assert.NoError(t, err)
 		assert.True(t, result)
 
-		// Verifying acceptable outgoing message format
+		// Verify acceptable outgoing message format
 		protoCandles := protoCandle.Candles{
 			Candles: []*protoCandle.Candle{
 				&myTesting.BinanceIOTAUSDT15mCandleExampleProtobuf,
@@ -98,7 +98,7 @@ func TestRESTFlow(t *testing.T) {
 func TestWebsocketFlow(t *testing.T) {
 	const testCandlesCount = 2
 
-	// Preparing mock binance.com transport
+	// Prepare mock binance.com transport
 	apiTransport := myTesting.NewTransportMock()
 	apiTransport.AddReceivableMessage(
 		transport.Message{
@@ -111,7 +111,7 @@ func TestWebsocketFlow(t *testing.T) {
 		},
 	)
 
-	// Fetching data from Binance
+	// Fetch data from Binance
 	api := binanceapi.NewAPI(nil, apiTransport)
 	candleChannel, errorChannel := api.WaitForCandles(
 		[]candle.Pair{candle.PairIOTAUSDT},
