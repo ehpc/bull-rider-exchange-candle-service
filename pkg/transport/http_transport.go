@@ -31,7 +31,7 @@ func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 	errorChannel := make(chan error, 1)
 
 	go func(){
-		// Creating proper URL
+		// Create proper URL
 		u, err := url.Parse(t.URL)
 		if err != nil {
 			errorChannel <- err
@@ -39,7 +39,7 @@ func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 		}
 		u.Path = path.Join(u.Path, rp["HTTPPath"])
 
-		// Extracting data
+		// Extract data
 		data := make(map[string]string)
 		for k, v := range map[string]string(rp) {
 			if k[:4] != "HTTP" {
@@ -47,7 +47,7 @@ func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 			}
 		}
 
-		// Making a request
+		// Make a request
 		var resp *http.Response
 		switch rp["HTTPMethod"] {
 		case "GET":
@@ -71,7 +71,7 @@ func (t *HTTPTransport) Receive(rp RequestParams) (chan Message, chan error) {
 			return
 		}
 		
-		// Processing results
+		// Process results
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {

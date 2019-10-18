@@ -1,6 +1,7 @@
 package testing
 
 import (
+	"fmt"
 	"time"
 	
 	"github.com/ehpc/bull-rider-exchange-candle-service/pkg/transport"
@@ -25,18 +26,26 @@ func (t *TransportMock) Send(message transport.Message) (bool, error) {
 
 // Receive receives fake message
 func (t *TransportMock) Receive(params transport.RequestParams) (chan transport.Message, chan error) {
+	messageChannel := make(chan transport.Message, 1)
+	errorChannel := make(chan error, 1)
 	hash := params.Hash()
 	messages := t.receivableMessages[hash]
 	len := len(messages)
+	if len == 0 {
+		errorChannel <- fmt.Errorf("no messages to receive for %v", hash)
+		close(messageChannel)
+		close(errorChannel)
+		return nil, errorChannel
+	}
 	message, x := messages[len-1], messages[:len-1]
 	t.receivableMessages[hash] = x
-	ch := make(chan transport.Message, 1)
 	go func(){
 		time.Sleep(50 * time.Millisecond)
-		ch <- message
-		close(ch)
+		messageChannel <- message
+		close(messageChannel)
+		close(errorChannel)
 	}()
-	return ch, nil
+	return messageChannel, nil
 }
 
 // Close closes transport

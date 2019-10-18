@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 	
 	"github.com/stretchr/testify/assert"
@@ -102,10 +103,12 @@ func TestWebsocketFlow(t *testing.T) {
 	apiTransport.AddReceivableMessage(
 		transport.Message{
 			Body: []byte(
-				myTesting.GenerateCandlesJSON(myTesting.BinanceCandleExampleWebsocketJSON, testCandlesCount),
+				myTesting.BinanceCandleExampleWebsocketJSON,
 			),
 		},
-		nil,
+		transport.RequestParams{
+			"WebsocketPath": fmt.Sprintf("/ws/%s@kline_%s", candle.PairIOTAUSDT, candle.Interval15m),
+		},
 	)
 
 	// Fetching data from Binance

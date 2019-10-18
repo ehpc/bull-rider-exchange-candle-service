@@ -36,7 +36,7 @@ func TestCandlesJSON(t *testing.T) {
 func TestRESTAPI(t *testing.T) {
 	const testCandlesCount = 10
 
-	// Populating fake data
+	// Populate fake data
 	apiTransport := myTesting.NewTransportMock()
 	apiTransport.AddReceivableMessage(
 		transport.Message{
@@ -91,14 +91,14 @@ func TestRESTAPI(t *testing.T) {
 		},
 	)
 
-	// Getting candles
+	// Get candles
 	api := NewAPI(apiTransport, nil)
 	pairs := []candle.Pair{candle.PairIOTAUSDT, candle.PairETHUSDT}
 	intervals := []candle.Interval{candle.Interval15m, candle.Interval1h}
 	candles, err := api.GetCandles(pairs, intervals)
 	assert.NoError(t, err)
 
-	// Checking that all pairs are present
+	// Check that all pairs are present
 	iotaCandles := []candle.Candle{}
 	ethCandles := []candle.Candle{}
 	for _, x := range candles {
@@ -112,7 +112,7 @@ func TestRESTAPI(t *testing.T) {
 	assert.NotEmpty(t, iotaCandles)
 	assert.NotEmpty(t, ethCandles)
 	
-	// Checking that all intervals are present
+	// Check that all intervals are present
 	interval15mCandles := []candle.Candle{}
 	interval1hCandles := []candle.Candle{}
 	for _, x := range iotaCandles {
@@ -138,7 +138,7 @@ func TestRESTAPI(t *testing.T) {
 	assert.NotEmpty(t, interval15mCandles)
 	assert.NotEmpty(t, interval1hCandles)
 
-	// Checking inner values
+	// Check inner values
 	assert.Equal(t, int64(1561622400000), candles[0].OpenTime)
 	assert.Equal(t, 0.42680000, candles[0].High)
 }

@@ -111,10 +111,10 @@ var BinanceIOTAUSDT15mCandleExampleProtobuf = protoCandle.Candle{
 var BinanceIOTAUSDT15mCandleExampleProtobufMarshaled, _ = proto.Marshal(&BinanceIOTAUSDT15mCandleExampleProtobuf)
 
 // GenerateCandlesJSON generates json with candles from Binance API
-func GenerateCandlesJSON(CandleRESTJSON string, count int) string {
+func GenerateCandlesJSON(CandleJSON string, count int) string {
 	json := "["
 	for i := 0; i < count; i++ {
-		json += CandleRESTJSON
+		json += CandleJSON
 		if i < count-1 {
 			json += ","
 		}

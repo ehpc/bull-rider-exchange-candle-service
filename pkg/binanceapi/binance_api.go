@@ -99,8 +99,6 @@ func (api *BinanceAPI) WaitForCandles(pairs []candle.Pair, intervals []candle.In
 				messageChannel, errorChannel := api.streamTransport.Receive(
 					transport.RequestParams{
 						"WebsocketPath": fmt.Sprintf("/ws/%s@kline_%s", pair, interval),
-						"symbol": string(pair),
-						"interval": string(interval),
 					},
 				)
 				messageChannels = append(messageChannels, messageChannel)
@@ -108,7 +106,7 @@ func (api *BinanceAPI) WaitForCandles(pairs []candle.Pair, intervals []candle.In
 			}
 		}
 	
-		// Generating channel select logic
+		// Generate channel select logic
 		selectCases := make([]reflect.SelectCase, len(messageChannels) + len(errorChannels))
 		for i, ch := range messageChannels {
 			selectCases[i] = reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(ch)}
